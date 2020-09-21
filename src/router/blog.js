@@ -66,11 +66,17 @@ const handleBlogRouter = (req, res) => {
 			return checkLoginResult
 		}
 
-		const {id, blogData} = req.body
+		const {id, content, title} = req.body
+		const blogData = {
+			title,
+			content
+		}
 		const updateBlogResult = updateBlog(id, blogData)
 		return updateBlogResult.then(res => {
 			if (res) {
-				return new SuccessModel(updateBlogResult)
+				return new SuccessModel({
+					blogId: id
+				})
 			} else {
 				return new ErrorModel(`未找到id = ${id}的博客`)
 			}

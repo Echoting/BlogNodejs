@@ -46,7 +46,7 @@ const updateBlog = (id, blogData = {}) => {
 		if (updateBlogData.affectedRows > 0) {
 			return true
 		}
-		return true
+		return false
 	})
 }
 
