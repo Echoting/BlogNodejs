@@ -9,9 +9,9 @@ const {redisSet} = require('../database/redis.js')
 const handleUserRouter = (req, res) => {
 	const {method, path} = req
 	
-	if (method === 'GET' && path === '/api/user/login') {
-		// const {username, password} = req.body
-		const {username, password} = req.query
+	if (method === 'POST' && path === '/api/user/login') {
+		const {username, password} = req.body
+		// const {username, password} = req.query
 		const result = login(username, password)
 		const {userid} = req.cookie
 		
@@ -34,18 +34,18 @@ const handleUserRouter = (req, res) => {
 		})
 	}
 
-	if (method === 'GET' && path === '/api/user/login-test') {
-		// const {username, password} = req.body
-		const {userid} = req.cookie
-		if (req.session) {
-			return Promise.resolve(new SuccessModel({
-					...req.session
-				})
-			)
-		}
+	// if (method === 'GET' && path === '/api/user/login-test') {
+	// 	// const {username, password} = req.body
+	// 	const {userid} = req.cookie
+	// 	if (req.session.username) {
+	// 		return Promise.resolve(new SuccessModel({
+	// 				...req.session
+	// 			})
+	// 		)
+	// 	}
 
-		return Promise.resolve(new ErrorModel('尚未登录'))
-	}
+	// 	return Promise.resolve(new ErrorModel('尚未登录'))
+	// }
 }
 
 module.exports = handleUserRouter
