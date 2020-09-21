@@ -1,4 +1,4 @@
-const mysql = require('redis')
+const redis = require('redis')
 const {REDIS_CONF} = require('../config/db.js')
 
 const redisClient = redis.createClient(REDIS_CONF.port, REDIS_CONF.host)
@@ -7,14 +7,14 @@ redisClient.on('error', err => {
 	console.error(err)
 })
 
-function set(key, value) {
+function redisSet(key, value) {
 	if (typeof value === 'object') {
 		value = JSON.stringify(value)
 	}
 	redisClient.set(key, value, redis.print)
 }
 
-function get(key) {
+function redisGet(key) {
 	const promise = new Promise((resolve, reject) => {
 		redisClient.get(key, (err, value) => {
 			if (err) {
@@ -32,9 +32,11 @@ function get(key) {
 			// redisClient.quit()
 		})
 	})
+
+	return promise
 }
 
 module.exports = {
-	get,
-	set
+	redisGet,
+	redisSet
 }

@@ -2,6 +2,8 @@ const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog.js')
 const handleUserRouter = require('./src/router/user.js')
 
+const {redisGet, redisSet} = require('./src/database/redis.js')
+
 // 用于处理 post data
 const getPostData = req => {
 	const promise = new Promise((resolve, reject) => {
@@ -69,7 +71,6 @@ const serverHandle = (req, res) => {
 		req.cookie[key] = value
 	})
 
-	// 处理session
 	let needSetCookie = false
 	let userId = req.cookie.userid;
 	// 如果没有userId则创建一个userId
@@ -77,13 +78,23 @@ const serverHandle = (req, res) => {
 		needSetCookie = true
 		userId = `${Date.now()}_${Math.random()}`
 	}
-	if(!SESSION_DATA[userId]) {
-		SESSION_DATA[userId] = {}
-	}
-	req.session = SESSION_DATA[userId]
+
+	// 解析session，使用redis
+	req.sessionId = userId
+	// 获取redis中userId对应的sessionData, 没数据则赋值为{}
+	redisGet(req.sessionId).then(sessionData => {
+		req.session = sessionData || {}
+		return getPostData(req)
+	})
+
+	// 处理session
+	// if(!SESSION_DATA[userId]) {
+	// 	SESSION_DATA[userId] = {}
+	// }
+	// req.session = SESSION_DATA[userId]
 
 	// 解析post数据
-	getPostData(req).then(postData => {
+	.then(postData => {
 		req.body = postData
 
 		// 处理blog路由

@@ -4,6 +4,8 @@ const {
 } = require('../controller/user.js')
 const {SuccessModel, ErrorModel} = require('../model/resModel.js')
 
+const {redisSet} = require('../database/redis.js')
+
 const handleUserRouter = (req, res) => {
 	const {method, path} = req
 	
@@ -16,10 +18,14 @@ const handleUserRouter = (req, res) => {
 		return result.then(data => {
 			if (data && data.username) {
 				// 操作cookie
-				req.session[userid] = {
+				req.session = {
 					username: data.username,
 					realname: data.realname
 				}
+
+				// 设置redis
+				redisSet(req.sessionId, req.session)
+				
 				return new SuccessModel({
 					username: data.username
 				})
@@ -31,9 +37,9 @@ const handleUserRouter = (req, res) => {
 	if (method === 'GET' && path === '/api/user/login-test') {
 		// const {username, password} = req.body
 		const {userid} = req.cookie
-		if (req.session[userid]) {
+		if (req.session) {
 			return Promise.resolve(new SuccessModel({
-					...req.session[userid]
+					...req.session
 				})
 			)
 		}
