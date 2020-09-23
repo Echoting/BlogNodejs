@@ -1,5 +1,6 @@
 
 const {exec} = require('../database/mysql.js')
+const xss = require('xss')
 
 const getBlogList = (author, keyword) => {
 	let sql = `select * from blogs where 1=1`
@@ -23,7 +24,9 @@ const getBlogDetail = id => {
 
 const addBlog = (blogData = {}) => {
 	// insert into blogs(title, content, createtime, author) values ('标题B', '内容B', 1599187696368, 'zhangsan')
-	const {title, content, createtime, author} = blogData;
+	let {title, content, createtime, author} = blogData;
+	title = xss(title)
+	content = xss(content)
 	let sql = `
 		insert into blogs(title, content, createtime, author) values ('${title}', '${content}', ${createtime}, '${author}')
 	`
@@ -37,8 +40,8 @@ const addBlog = (blogData = {}) => {
 const updateBlog = (id, blogData = {}) => {
 	// id为博客对应的id
 	// blogData中包含title 和content
-	title = blogData.title
-	content = blogData.content
+	title = xss(blogData.title)
+	content = xss(blogData.content)
 
 	let sql = `update blogs set title='${title}', content='${content}' where blogId=${id}`
 
