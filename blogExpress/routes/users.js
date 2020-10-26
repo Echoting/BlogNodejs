@@ -22,10 +22,6 @@ router.post('/login', function(req, res, next) {
 			// 操作cookie
 			req.session.username = data.username
 			req.session.realname = data.realname
-			// req.session = {
-			// 	username: data.username,
-			// 	realname: data.realname
-			// }
 			
 			res.json(new SuccessModel())
 
