@@ -2,6 +2,9 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 
+const session = require('express-session');
+const redisStore = require('connect-redis')(session);
+
 // 解析cookie
 var cookieParser = require('cookie-parser');
 
@@ -27,6 +30,22 @@ app.use(express.urlencoded({ extended: false }));
 
 // cookie
 app.use(cookieParser());
+
+const redisClient = require('./database/redis');
+const sessionStore = new redisStore({
+	client: redisClient
+})
+app.use(session({
+	secret: 'Ec2343@',
+	'resave': false,
+	saveUninitialized: true,
+	cookie: {
+		// path: '/',  // 默认配置
+		// httpOnly: true,  // 默认配置
+		maxAge: 24 * 60 * 60 * 1000,  // 失效时间
+	},
+	store: sessionStore
+}));
 
 // 暂时不考虑前端页面
 app.use(express.static(path.join(__dirname, 'public')));
