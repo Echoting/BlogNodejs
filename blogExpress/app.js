@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+const fs = require('fs');
 
 const session = require('express-session');
 const redisStore = require('connect-redis')(session);
@@ -22,7 +23,22 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+// 日志处理，分环境，产品环境中将日志写入文件，开发环境放控制台就好，这里主要是access log
+// 自定义日志主要用console.log()，或者console.error()来做
+// app.use(logger('dev'));
+const isDev = process.env.NODE_ENV !== 'production';
+if (isDev) {
+    app.use(logger('dev'));
+} else {
+    const fullFileName = path.join(__dirname, 'logs', 'access.log');
+    const writeStream = fs.createWriteStream(fullFileName, {
+        flags: 'a' // a 是追加，w是覆盖
+    });
+
+    app.use(logger('combined', {
+    	stream: writeStream
+	}))
+}
 
 // 处理post接口的数据，放在req.body上，且兼容其他格式
 app.use(express.json());
