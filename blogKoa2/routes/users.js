@@ -25,17 +25,4 @@ router.post('/login', async (ctx, next) => {
     return ctx.body = new ErrorModel('尚未登录')
 })
 
-router.get('/session-test', async (ctx, next) => {
-    if (ctx.session.viewCount == null) {
-        ctx.session.viewCount = 0
-    } else {
-        ctx.session.viewCount ++
-    }
-
-    ctx.body = {
-        error: 0,
-        viewCount: ctx.session.viewCount
-    }
-})
-
 module.exports = router

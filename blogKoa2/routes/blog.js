@@ -14,7 +14,7 @@ const loginCheck = require('../middleware/loginCheck')
 router.prefix('/api/blog')
 
 router.get('/list', async (ctx, next) => {
-    let {keyword, author} = ctx.request.query
+    let {keyword, author} = ctx.query
 
     // 管理员页面
     if (ctx.request.query.isadmin) {
@@ -32,7 +32,7 @@ router.get('/list', async (ctx, next) => {
 })
 
 router.get('/detail', async (ctx, next) => {
-    const id = ctx.request.query.id || ''
+    const id = ctx.query.id || ''
     const blogData = await getBlogDetail(id)
 
     return ctx.body = new SuccessModel(blogData)
@@ -70,9 +70,8 @@ router.post('/update', loginCheck, async (ctx, next) => {
 router.post('/delete', loginCheck, async (ctx, next) => {
     const id = ctx.request.body.id || ''
     const deleteResult = await deleteBlog(id)
-
     return ctx.body = deleteResult
-        ? new SuccessModel(deleteResult)
+        ? new SuccessModel()
         : new ErrorModel(`未找到id = ${id}的博客`)
 })
 
