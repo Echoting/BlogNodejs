@@ -1,0 +1,2 @@
+::ffff:127.0.0.1 - - [29/Oct/2020:09:35:03 +0000] "GET /api/blog/list HTTP/1.0" 200 1405 "http://localhost:1234/index.html" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
+::ffff:127.0.0.1 - - [29/Oct/2020:09:42:26 +0000] "GET /api/blog/detail?id=22 HTTP/1.0" 200 194 "http://localhost:1234/detail.html?id=22" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36"
