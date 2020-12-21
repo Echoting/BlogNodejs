@@ -48,19 +48,37 @@ module.exports = class LikeExpress {
         return stack;
     }
 
-    handle(req, res, stack) {
-        const next = () => {
-            // 拿到第一个匹配的中间件
-            // shift 取得数组的第一项
-            const middleware = stack.shift();
-            if (middleware) {
-                // 执行中间件函数
-                middleware(req, res, next);
-            }
-        };
-        // 定义完后立即执行
-        next();
+    // handle(req, res, stack) {
+    //     const next = () => {
+    //         // 拿到第一个匹配的中间件
+    //         // shift 取得数组的第一项
+    //         const middleware = stack.shift();
+    //         if (middleware) {
+    //             // 执行中间件函数
+    //             middleware(req, res, next);
+    //         }
+    //     };
+    //     // 定义完后立即执行
+    //     next();
+    //
+    // }
 
+    handle(req, res, stack) {
+        let index = 0
+
+        const next = () => {
+            const middleware = stack[index]
+            index++
+
+            console.log(666, index)
+            if (!middleware) {
+                return
+            } else {
+                middleware(req, res, next)
+            }
+        }
+
+        next()
     }
 
     callback() {
